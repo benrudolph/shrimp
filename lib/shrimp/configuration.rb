@@ -19,9 +19,9 @@ module Shrimp
           :tmpdir               => Dir.tmpdir,
           :rendering_timeout    => 90000,
           :rendering_time       => 1000,
+          :viewport_width       => 1000,
+          :viewport_height      => 600,
           :command_config_file  => File.expand_path('../config.json', __FILE__),
-          :viewport_width       => 600,
-          :viewport_height      => 600
       }
     end
 
