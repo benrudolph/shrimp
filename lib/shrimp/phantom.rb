@@ -30,7 +30,6 @@ module Shrimp
     #
     # Returns the stdout output of phantomjs
     def run
-      File.open('/hom/deploy/env', 'w+') { |f| f.write(`env`) }
       @error  = nil
       @result = `#{cmd}`
       unless $?.exitstatus == 0
