@@ -18,6 +18,7 @@ Gem::Specification.new do |gem|
   gem.require_paths = %w(lib)
   gem.requirements << 'phantomjs, v1.6 or greater'
   gem.add_runtime_dependency "json"
+  gem.add_runtime_dependency "resque"
 
   # Developmnet Dependencies
   gem.add_development_dependency(%q<rake>, [">=0.9.2"])

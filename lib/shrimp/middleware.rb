@@ -1,4 +1,13 @@
 module Shrimp
+  class PhantomJob
+    @queue = :shrimp
+
+    def self.perform(url, cookies, out, options)
+      Rails.logger.info "[SHRIMP DEBUG] #{url}"
+      Rails.logger.info "[SHRIMP DEBUG] #{out}"
+      p = Phantom.new(url, options, cookies).to_pdf(out)
+    end
+  end
   class Middleware
     def initialize(app, options = { }, conditions = { })
       @app                        = app
@@ -8,7 +17,6 @@ module Shrimp
       @options[:polling_offset]   ||= 1
       @options[:cache_ttl]        ||= 1
       @options[:request_timeout]  ||= @options[:polling_interval] * 10
-      @options[:debug]            ||= false
     end
 
     def call(env)
@@ -53,17 +61,15 @@ module Shrimp
 
     private
 
-    # Private: start phantom rendering in a separate process
-    def fire_phantom
-      log 'Request: ' + @request.url.sub(%r{\.pdf$}, '')
-      log 'Env: ' + `env`
-      Process::detach fork { Phantom.new(@request.url.sub(%r{\.pdf$}, ''), @options, @request.cookies).to_pdf(render_to) }
-    end
-
     def render_to
       file_name = Digest::MD5.hexdigest(@request.path) + ".pdf"
       file_path = @options[:out_path]
       "#{file_path}/#{file_name}"
+    end
+    # Private: start phantom rendering in a separate process
+    def fire_phantom
+      url = @request.url.sub(%r{\.pdf$}, '')
+      Resque.enqueue(PhantomJob, url, @request.cookies, render_to, @options)
     end
 
     def already_rendered?
@@ -113,19 +119,19 @@ module Shrimp
             return false if @request.path =~ pattern
           else
             return false if @request.path[0, pattern.length] == pattern
-          end
+          endCOUNT=5 QUEUE=* rake resque:work
         end
         return true
       else
         request_path_is_pdf
       end
-    end
+    endCOUNT=5 QUEUE=* rake resque:work
 
     def concat(accepts, type)
       (accepts || '').split(',').unshift(type).compact.join(',')
     end
 
-    def reload_response(interval=1)
+    def reload_response(interval=1)COUNT=5 QUEUE=* rake resque:work
       body = <<-HTML.gsub(/[ \n]+/, ' ').strip
           <html>
           <head>
@@ -141,10 +147,6 @@ module Shrimp
       headers["Retry-After"]    = interval.to_s
 
       [503, headers, [body]]
-    end
-
-    def log(message)
-      Rails.logger.info "[SHRIMP DEBUG] #{message}" if @options[:debug]
     end
 
     def ready_response
