@@ -125,6 +125,7 @@ module Shrimp
       else
         request_path_is_pdf
       end
+    end
 
     def concat(accepts, type)
       (accepts || '').split(',').unshift(type).compact.join(',')
