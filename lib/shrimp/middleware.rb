@@ -119,19 +119,18 @@ module Shrimp
             return false if @request.path =~ pattern
           else
             return false if @request.path[0, pattern.length] == pattern
-          endCOUNT=5 QUEUE=* rake resque:work
+          end
         end
         return true
       else
         request_path_is_pdf
       end
-    endCOUNT=5 QUEUE=* rake resque:work
 
     def concat(accepts, type)
       (accepts || '').split(',').unshift(type).compact.join(',')
     end
 
-    def reload_response(interval=1)COUNT=5 QUEUE=* rake resque:work
+    def reload_response(interval=1)
       body = <<-HTML.gsub(/[ \n]+/, ' ').strip
           <html>
           <head>
