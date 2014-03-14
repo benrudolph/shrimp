@@ -1,3 +1,4 @@
+require 'resque'
 module Shrimp
   class PhantomJob
     @queue = :shrimp
