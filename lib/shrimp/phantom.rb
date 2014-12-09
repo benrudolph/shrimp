@@ -58,7 +58,8 @@ module Shrimp
       viewport_width, viewport_height   = options[:viewport_width], options[:viewport_height]
       @outfile                          ||= "#{options[:tmpdir]}/#{Digest::MD5.hexdigest((Time.now.to_i + rand(9001)).to_s)}.pdf"
       command_config_file               = "--config=#{options[:command_config_file]}"
-      cmd_parts = [Shrimp.configuration.phantomjs, command_config_file, SCRIPT_FILE, @source.to_s, @outfile, format, zoom, margin, orientation, cookie_file, rendering_time, timeout, viewport_width, viewport_height]
+      ssl_protocol                      = "--ssl-protocol=any"
+      cmd_parts = [Shrimp.configuration.phantomjs, ssl_protocol, command_config_file, SCRIPT_FILE, @source.to_s, @outfile, format, zoom, margin, orientation, cookie_file, rendering_time, timeout, viewport_width, viewport_height]
       cmd_parts << "> #{options[:logfile]}" if options[:logfile].present?
       cmd_parts.join(" ")
     end
